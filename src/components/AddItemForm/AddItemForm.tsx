@@ -58,7 +58,7 @@ const defaultValues: Partial<ItemFormValues> = {
   description: undefined,
 };
 
-const Item = ({ data }) => {
+const Item = ({ data }: { data: any }) => {
   const form = useForm<ItemFormValues>({
     resolver: zodResolver(itemFormSchema),
     defaultValues,
@@ -77,7 +77,7 @@ const Item = ({ data }) => {
   }
 
   return (
-    <Table data={data} column={} />
+    <Table data={data} />
     // <Form {...form}>
     //   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-3/5">
     //     <FormField

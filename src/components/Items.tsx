@@ -22,10 +22,10 @@ import { Icons } from "@/components/icons";
 //   };
 // }
 
-export function Items(props) {
+export function Items(props: any) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
-  async function onSubmit(event) {
+  async function onSubmit(event: any) {
     event.preventDefault();
     setIsLoading(!isLoading);
 

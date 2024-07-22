@@ -27,7 +27,7 @@ import {
   X,
   CircleGauge,
   Building2,
-  type Icon as LucideIcon,
+  type LucideIcon,
 } from "lucide-react";
 import build from "next/dist/build";
 

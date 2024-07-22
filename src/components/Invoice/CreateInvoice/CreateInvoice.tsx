@@ -341,13 +341,11 @@ const CreateInvoice = ({ tasks }: { tasks: any }) => {
   const [items, setItems] = useState<ItemFormValues[]>([]);
   const [editIndex, setEditIndex] = useState<undefined | number>();
 
-  const [date, setDate] = useState();
-
   const [isCreateItemDialogVisible, setIsCreateItemDialogVisible] =
     useState(false);
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultInvoiceValues,
+    null,
     mode: "onChange",
   });
 

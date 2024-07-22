@@ -1,11 +1,6 @@
-import { promises as fs } from "fs";
-import path from "path";
 import { Metadata } from "next";
 import Image from "next/image";
-import { z } from "zod";
-import { taskSchema } from "@/app/(protected)/item/data/schema";
-import AddCompany from "@/components/company/CompanyTable/CompanyTable";
-import Company from "@/components/company/CompanyTable/CompanyTable";
+import CompanyTable from "@/components/company/CompanyTable";
 export const metadata: Metadata = {
   title: "Tasks",
   description: "A task and issue tracker build using Tanstack Table.",
@@ -45,7 +40,7 @@ export default async function Company() {
         />
       </div>
       <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
-        <Company data={data} />
+        <CompanyTable data={data} />
       </div>
     </>
   );
