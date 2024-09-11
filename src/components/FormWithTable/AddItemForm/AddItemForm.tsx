@@ -40,7 +40,6 @@ const AddItemForm = ({
   onSubmit: (data: ItemFormValues) => void;
   defaultValues: Partial<ItemFormValues>;
 }) => {
-  console.log(defaultValues);
   const form = useForm<ItemFormValues>({
     resolver: zodResolver(itemFormSchema),
     defaultValues,

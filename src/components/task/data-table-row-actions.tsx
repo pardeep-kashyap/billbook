@@ -14,8 +14,8 @@ import {
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
-  editRow: (row: any, index: number) => void;
-  onDelete: (index: number) => void;
+  editRow?: (row: any, index: number) => void;
+  onDelete?: (index: number) => void;
 }
 
 export function DataTableRowActions<TData>({
@@ -37,7 +37,9 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem onClick={() => editRow(row.original, row.index)}>
+        <DropdownMenuItem
+          onClick={() => editRow && editRow(row.original, row.index)}
+        >
           Edit
         </DropdownMenuItem>
         {/* <DropdownMenuItem>Make a copy</DropdownMenuItem> */}
@@ -56,7 +58,7 @@ export function DataTableRowActions<TData>({
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSeparator /> */}
-        <DropdownMenuItem onClick={() => onDelete(row.index)}>
+        <DropdownMenuItem onClick={() => onDelete && onDelete(row.index)}>
           Delete
           <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
         </DropdownMenuItem>

@@ -89,7 +89,6 @@ const AddItemForm = ({
   onSubmit: (data: ItemFormValues) => void;
   defaultValues: Partial<ItemFormValues>;
 }) => {
-  console.log(defaultValues);
   const form = useForm<ItemFormValues>({
     resolver: zodResolver(itemFormSchema),
     defaultValues,
@@ -343,9 +342,10 @@ const CreateInvoice = ({ tasks }: { tasks: any }) => {
 
   const [isCreateItemDialogVisible, setIsCreateItemDialogVisible] =
     useState(false);
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    null,
+    defaultValues: defaultInvoiceValues,
     mode: "onChange",
   });
 
@@ -491,11 +491,15 @@ const CreateInvoice = ({ tasks }: { tasks: any }) => {
     setItems([data, ...items]);
   };
 
-  const calculateTotal = (dateItems: ItemFormValues[], property: string) => {
+  const calculateTotal = (
+    dateItems: ItemFormValues[],
+    property: keyof ItemFormValues
+  ) => {
     return Number(
       dateItems
         .reduce((total, row) => {
-          return total + (row[property] ?? 0);
+          const value = row[property];
+          return total + (typeof value === "number" ? value : 0); // Ensure value is a number
         }, 0)
         .toFixed(2)
     );
@@ -535,8 +539,20 @@ const CreateInvoice = ({ tasks }: { tasks: any }) => {
         setOpen={setIsCreateItemDialogVisible}
       />
       <div className="flex justify-end">
-        <PrintInvoice />
+        <PrintInvoice
+          items={items}
+          total={new Intl.NumberFormat("en-IN").format(totalAmount)}
+          invoiceNo={Math.random().toString()}
+          date={new Date().toDateString()}
+          discountedPrice={new Intl.NumberFormat("en-IN").format(totalDiscount)}
+          totalPayableAmount={new Intl.NumberFormat("en-IN").format(
+            totalAmount
+          )}
+          gstTaxAmount={new Intl.NumberFormat("en-IN").format(totalAmount)}
+          company={"TEST"}
+        />
       </div>
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -591,11 +607,7 @@ const CreateInvoice = ({ tasks }: { tasks: any }) => {
                 <FormItem className="w-3/6">
                   <FormLabel>Invoice Date</FormLabel>
                   <FormControl>
-                    <DatePicker
-                      className="w-full"
-                      date={field.value}
-                      setDate={field.onChange}
-                    />
+                    <DatePicker date={field.value} setDate={field.onChange} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

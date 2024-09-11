@@ -8,18 +8,19 @@ export const metadata: Metadata = {
 
 // Simulate a database read for tasks.
 async function getCompanies() {
-  return await fetch("/api/company", {
+  const data = await fetch(`${process.env.URL}/api/company`, {
     method: "GET",
+    headers: {
+      Authorization:
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IjEyMzQ1Njc4OTAiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.8_3wpqehzTXfBzUmhgusfhUNDo15mi0EejjdlNqHwn4",
+    },
   });
 
-  // const tasks = JSON.parse(data.toString());
-
-  // return z.array(taskSchema).parse(tasks);
+  return JSON.stringify(data);
 }
 
 export default async function Company() {
   const data = await getCompanies();
-  console.log("data", data);
 
   return (
     <>

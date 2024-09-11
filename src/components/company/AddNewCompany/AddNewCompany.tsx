@@ -98,7 +98,6 @@ const AddCompany = ({
   onSubmit: (data: ProfileFormValues) => void;
   defaultValues: Partial<ProfileFormValues>;
 }) => {
-  console.log(defaultValues);
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(companyFormSchema),
     defaultValues,

@@ -14,7 +14,7 @@ export const LoginForm = () => {
     console.log("Component mounted on client-side");
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     router.push("/dashboard");
     // Add your login logic here

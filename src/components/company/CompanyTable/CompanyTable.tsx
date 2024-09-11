@@ -9,6 +9,7 @@ import { DataTableColumnHeader } from "@/components/task/data-table-column-heade
 import { DataTableRowActions } from "@/components/task/data-table-row-actions";
 import { Checkbox } from "@radix-ui/react-checkbox";
 import { ColumnDef } from "@tanstack/react-table";
+import { useMutation } from "@tanstack/react-query";
 
 const formSchema = z.object({
   name: z
@@ -82,6 +83,26 @@ const CompanyTable = ({ data }: { data: any }) => {
   const [isCreateItemDialogVisible, setIsCreateItemDialogVisible] =
     useState(false);
   const [companyForm, setCompanyForm] = useState(defaultValues);
+
+  // Mutations
+  const mutation = useMutation({
+    mutationFn: async (body: string) => {
+      const response = await fetch(`${process.env.URL}/api/company`, {
+        method: "GET",
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IjEyMzQ1Njc4OTAiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.8_3wpqehzTXfBzUmhgusfhUNDo15mi0EejjdlNqHwn4",
+        },
+        body,
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      return response.json(); // or response.text(), depending on your API response
+    },
+  });
 
   const editRow = (row: any, index: number) => {
     setEditIndex(index);
@@ -197,7 +218,9 @@ const CompanyTable = ({ data }: { data: any }) => {
     setIsCreateItemDialogVisible(!isCreateItemDialogVisible);
   };
 
-  const handleSubmit = (data: FormValues) => {};
+  const handleSubmit = (data: FormValues) => {
+    mutation.mutate(JSON.stringify(data));
+  };
   return (
     <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
       <AddCompany

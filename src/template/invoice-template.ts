@@ -1,4 +1,6 @@
-export const INVOICE_TEMPLATE = {
+import { TDocumentDefinitions } from "pdfmake/interfaces";
+
+export const INVOICE_TEMPLATE: TDocumentDefinitions = {
 
 
   header: {
@@ -28,7 +30,6 @@ export const INVOICE_TEMPLATE = {
           {
             text: 'INVOICE',
             style: 'invoiceTitle',
-            width: '*'
           },
           {
             stack: [

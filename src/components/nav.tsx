@@ -23,7 +23,7 @@ export function DashboardNav({ items }: DashboardNavProps) {
       {items.map((item, index) => {
         const Icon = Icons[item.icon || "arrowRight"];
         return (
-          item && (
+          item?.href && (
             <Link key={index} href={item.href}>
               <span
                 className={cn(
