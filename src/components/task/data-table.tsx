@@ -117,7 +117,10 @@ export function DataTable<TData, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
+                  {/* <div className="flex item-center"> */}
+                  {/* <Icons.filePlus2 className="mr-2 h-15	w-20 align-center" /> */}
                   No results.
+                  {/* </div> */}
                 </TableCell>
               </TableRow>
             )}

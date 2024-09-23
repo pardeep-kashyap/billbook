@@ -48,11 +48,13 @@ export const batchPutItem = async <T = unknown>(items: [string, T][]) => {
 }
 
 export const deleteItem = async <T>(item: T, table: string) => {
+  console.log("item,", item)
   const params = {
     TableName: table,
     Key: marshall(item),
     ConditionExpression: 'attribute_exists(id)'
   }
+  console.log("item: T, table", JSON.stringify(params))
 
   return client
     .send(new DeleteItemCommand(params))
@@ -61,9 +63,10 @@ export const deleteItem = async <T>(item: T, table: string) => {
         statusCode: $metadata.httpStatusCode
       }
     })
-    .catch(({ $metadata }) => {
+    .catch((error) => {
+      console.log("metadata", error)
       return {
-        statusCode: $metadata.httpStatusCode
+        statusCode: error.$metadata.httpStatusCode
       }
     })
 }

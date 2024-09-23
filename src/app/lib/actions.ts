@@ -1,10 +1,11 @@
 'use server'
 
-// import { signIn } from '@/auth'
+import { revalidatePath } from "next/cache";
 
 export async function authenticate(_currentState: unknown, formData: FormData) {
   try {
     await Promise.resolve({})
+    // Add your authentication logic here
   } catch (error) {
     if (error) {
       switch (error) {
@@ -16,4 +17,8 @@ export async function authenticate(_currentState: unknown, formData: FormData) {
     }
     throw error
   }
+}
+
+export async function revalidateServer(path: string) {
+  revalidatePath(path);
 }

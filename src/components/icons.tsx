@@ -25,11 +25,11 @@ import {
   Twitter,
   User,
   X,
+  FilePlus2,
   CircleGauge,
   Building2,
   type LucideIcon,
 } from "lucide-react";
-import build from "next/dist/build";
 
 export type Icon = LucideIcon;
 
@@ -59,6 +59,7 @@ export const Icons = {
   laptop: Laptop,
   print: Printer,
   building: Building2,
+  filePlus2: FilePlus2,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"

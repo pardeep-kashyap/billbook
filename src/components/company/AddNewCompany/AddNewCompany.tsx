@@ -20,9 +20,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../ui/dialog";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
-const companyFormSchema = z.object({
+const schema = z.object({
   name: z
     .string()
     .min(1, {
@@ -71,14 +71,20 @@ const companyFormSchema = z.object({
     .max(15, {
       message: "GST should be 15 characters long.",
     }),
+  contactNo: z.string().min(10, {
+    message: "Contact no should be 15 characters long.",
+  }),
   description: z.string().max(160).min(4),
+  id: z.string().optional(),
 });
 
-type ProfileFormValues = z.infer<typeof companyFormSchema>;
+export type CompanyFormFields = z.infer<typeof schema>;
 
 // This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
+const defaultValues: Partial<CompanyFormFields> = {
+  id: "",
   name: "",
+  contactNo: "",
   address: "",
   gst: "",
   pincode: "",
@@ -87,27 +93,33 @@ const defaultValues: Partial<ProfileFormValues> = {
   description: "",
 };
 
-const AddCompany = ({
+const AddCompanyDialog = ({
   isOpen,
+  isSubmitting,
   setOpen,
   onSubmit,
-  defaultValues,
+  value,
 }: {
   isOpen: boolean;
+  isSubmitting?: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  onSubmit: (data: ProfileFormValues) => void;
-  defaultValues: Partial<ProfileFormValues>;
+  onSubmit: (data: CompanyFormFields) => void;
+  value: Partial<CompanyFormFields> | undefined;
 }) => {
-  const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(companyFormSchema),
-    defaultValues,
-    mode: "onChange",
+  const form = useForm<CompanyFormFields>({
+    resolver: zodResolver(schema),
+    defaultValues: value ?? defaultValues,
+    mode: "onBlur",
+    disabled: isSubmitting,
   });
 
-  const handleSubmit = (data: ProfileFormValues) => {
-    form.reset();
+  const handleSubmit = (data: CompanyFormFields) => {
     onSubmit(data);
   };
+
+  useEffect(() => {
+    form.reset(value);
+  }, [form, value]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
@@ -151,40 +163,19 @@ const AddCompany = ({
             />
             <FormField
               control={form.control}
-              name="address"
+              name="contactNo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Address</FormLabel>
+                  <FormLabel> Contant No.</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Tell us company address"
-                      className="resize-none"
-                      {...field}
-                    />
+                    <Input placeholder="Enter an Contact no" {...field} />
                   </FormControl>
 
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Tell us a little bit about company"
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <FormField
               control={form.control}
               name="pincode"
@@ -227,13 +218,50 @@ const AddCompany = ({
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Tell us company address"
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
 
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Tell us a little bit about company"
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div></div>
-            <Button type="submit">Save</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Saving..." : "Save"}
+            </Button>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
   );
 };
-export default AddCompany;
+export default AddCompanyDialog;

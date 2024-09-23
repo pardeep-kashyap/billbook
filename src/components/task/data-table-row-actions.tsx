@@ -15,7 +15,7 @@ import {
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
   editRow?: (row: any, index: number) => void;
-  onDelete?: (index: number) => void;
+  onDelete?: (row: any, index: number) => void;
 }
 
 export function DataTableRowActions<TData>({
@@ -42,23 +42,9 @@ export function DataTableRowActions<TData>({
         >
           Edit
         </DropdownMenuItem>
-        {/* <DropdownMenuItem>Make a copy</DropdownMenuItem> */}
-        {/* <DropdownMenuItem>Favorite</DropdownMenuItem> */}
-        {/* <DropdownMenuSeparator /> */}
-        {/* <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={task.label}>
-              {labels.map((label) => (
-                <DropdownMenuRadioItem key={label.value} value={label.value}>
-                  {label.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        <DropdownMenuSeparator /> */}
-        <DropdownMenuItem onClick={() => onDelete && onDelete(row.index)}>
+        <DropdownMenuItem
+          onClick={() => onDelete && onDelete(row.original, row.index)}
+        >
           Delete
           <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
         </DropdownMenuItem>
