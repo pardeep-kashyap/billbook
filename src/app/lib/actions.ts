@@ -1,6 +1,6 @@
 'use server'
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath } from 'next/cache'
 
 export async function authenticate(_currentState: unknown, formData: FormData) {
   try {
@@ -20,5 +20,5 @@ export async function authenticate(_currentState: unknown, formData: FormData) {
 }
 
 export async function revalidateServer(path: string) {
-  revalidatePath(path);
+  revalidatePath(path)
 }

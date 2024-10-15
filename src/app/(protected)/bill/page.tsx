@@ -1,10 +1,10 @@
 // pages/login.js
 
-import React from "react";
-import Head from "next/head";
-import { LoginForm } from "@/components/LoginTemplate";
-import Image from "next/image";
-import { BillingForm } from "@/components/billing-form";
+import React from 'react'
+import Head from 'next/head'
+import { LoginForm } from '@/components/LoginTemplate'
+import Image from 'next/image'
+import { BillingForm } from '@/components/billing-form'
 
 const Login = () => {
   return (
@@ -30,7 +30,7 @@ const Login = () => {
         <BillingForm />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

@@ -1,4 +1,4 @@
-import Form from "./AddItemForm";
-import Table from "./ItemTable";
+import Form from './AddItemForm'
+import Table from './ItemTable'
 
-export { Form, Table };
+export { Form, Table }

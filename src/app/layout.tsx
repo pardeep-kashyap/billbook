@@ -1,9 +1,9 @@
-import Providers from "../components/QueryClientProvider";
+import Providers from '../components/QueryClientProvider'
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html lang="en">
@@ -11,5 +11,5 @@ export default function RootLayout({
         <Providers>{children}</Providers>
       </body>
     </html>
-  );
+  )
 }

@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import * as React from "react";
+import * as React from 'react'
 
 // import { UserSubscriptionPlan } from "types";
-import { cn, formatDate } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
+import { cn, formatDate } from '@/lib/utils'
+import { buttonVariants } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -12,9 +12,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { toast } from "@/components/ui/use-toast";
-import { Icons } from "@/components/icons";
+} from '@/components/ui/card'
+import { toast } from '@/components/ui/use-toast'
+import { Icons } from '@/components/icons'
 
 // interface BillingFormProps extends React.HTMLAttributes<HTMLFormElement> {
 //   subscriptionPlan: UserSubscriptionPlan & {
@@ -23,29 +23,29 @@ import { Icons } from "@/components/icons";
 // }
 
 export function Items(props: any) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
   async function onSubmit(event: any) {
-    event.preventDefault();
-    setIsLoading(!isLoading);
+    event.preventDefault()
+    setIsLoading(!isLoading)
 
     // Get a Stripe session URL.
-    const response = await fetch("/api/users/stripe");
+    const response = await fetch('/api/users/stripe')
 
     if (!response?.ok) {
       return toast({
-        title: "Something went wrong.",
-        description: "Please refresh the page and try again.",
-        variant: "destructive",
-      });
+        title: 'Something went wrong.',
+        description: 'Please refresh the page and try again.',
+        variant: 'destructive',
+      })
     }
 
     // Redirect to the Stripe session.
     // This could be a checkout page for initial upgrade.
     // Or portal to manage existing subscription.
-    const session = await response.json();
+    const session = await response.json()
     if (session) {
-      window.location.href = session.url;
+      window.location.href = session.url
     }
   }
 
@@ -79,5 +79,5 @@ export function Items(props: any) {
         </CardFooter>
       </Card>
     </form>
-  );
+  )
 }

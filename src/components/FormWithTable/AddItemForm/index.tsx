@@ -1,3 +1,3 @@
-import Form from "./AddItemForm";
+import Form from './AddItemForm'
 
-export default Form;
+export default Form

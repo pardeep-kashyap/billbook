@@ -1,21 +1,21 @@
-"use client";
+'use client'
 
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { Row } from "@tanstack/react-table";
+import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+import { Row } from '@tanstack/react-table'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu'
 
 interface DataTableRowActionsProps<TData> {
-  row: Row<TData>;
-  editRow?: (row: any, index: number) => void;
-  onDelete?: (row: any, index: number) => void;
+  row: Row<TData>
+  editRow?: (row: any, index: number) => void
+  onDelete?: (row: any, index: number) => void
 }
 
 export function DataTableRowActions<TData>({
@@ -23,7 +23,7 @@ export function DataTableRowActions<TData>({
   editRow,
   onDelete,
 }: DataTableRowActionsProps<TData>) {
-  const task = row.original;
+  const task = row.original
 
   return (
     <DropdownMenu>
@@ -50,5 +50,5 @@ export function DataTableRowActions<TData>({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

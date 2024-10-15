@@ -1,73 +1,99 @@
-"use client";
-import { useState } from "react";
-import { DataTable } from "@/components/task/data-table";
-import AddItemForm from "../AddItemForm/AddItemForm";
-import { Task } from "@/app/(protected)/item/data/schema";
-import { DataTableColumnHeader } from "@/components/task/data-table-column-header";
-import { DataTableRowActions } from "@/components/task/data-table-row-actions";
-import { Checkbox } from "@radix-ui/react-checkbox";
-import { ColumnDef } from "@tanstack/react-table";
-import { z } from "zod";
+'use client'
+import { useEffect, useState } from 'react'
+import { DataTable } from '@/components/task/data-table'
+import AddItemForm from '../AddItemForm/AddItemForm'
+import { Task } from '@/app/(protected)/item/data/schema'
+import { DataTableColumnHeader } from '@/components/task/data-table-column-header'
+import { DataTableRowActions } from '@/components/task/data-table-row-actions'
+import { Checkbox } from '@radix-ui/react-checkbox'
+import { ColumnDef } from '@tanstack/react-table'
+import { ItemFormFields } from '@/components/FormWithTable/AddItemForm/AddItemForm'
+import { toast } from '@/components/ui/use-toast'
+import { useMutation } from '@tanstack/react-query'
+import * as actions from '@/app/actions/item'
 
-export const itemFormSchema = z.object({
-  itemName: z.string().min(1, {
-    message: "Item Name is required.",
-  }),
-  quantityType: z.coerce.number().positive().min(1),
-  hsnCode: z.string({
-    required_error: "Hsn code is required.",
-  }),
-  rate: z.coerce
-    .number({
-      required_error: "Rate is required",
-    })
-    .positive()
-    .min(1),
-  description: z.string().optional(),
-  discount: z.coerce.number().positive().min(1).max(100).optional(),
-  unit: z.coerce.number().positive().min(1).optional(),
-  amount: z.coerce.number().positive().min(0).optional(),
-  grossTotalAmount: z.coerce.number().positive().min(0).optional(),
-  discountAmount: z.coerce.number().positive().min(0).optional(),
-});
-
-export type ItemFormValues = z.infer<typeof itemFormSchema>;
-
-// This can come from your database or API.
-const defaultValues: Partial<ItemFormValues> = {
-  itemName: undefined,
-  quantityType: undefined,
-  hsnCode: undefined,
-  unit: undefined,
-  rate: undefined,
-  description: undefined,
-};
 const ItemTable = ({ data }: { data: any }) => {
-  const [companies, setCompanies] = useState<ItemFormValues[]>([]);
-  const [editIndex, setEditIndex] = useState<undefined | number>();
+  const [items, setItems] = useState<ItemFormFields[]>([])
+
+  const [editIndex, setEditIndex] = useState<undefined | number>()
 
   const [isCreateItemDialogVisible, setIsCreateItemDialogVisible] =
-    useState(false);
-  const [companyForm, setCompanyForm] = useState(defaultValues);
+    useState(false)
+
+  // Mutations
+  const save = useMutation({
+    mutationFn: actions.save,
+    onSuccess: async () => {
+      toast({
+        title: 'Saved!',
+        description: 'Item saved successfully',
+        variant: 'destructive',
+      })
+    },
+    onError: () => {
+      toast({
+        title: 'Something went wrong.',
+        description: 'Please refresh the page and try again.',
+        variant: 'destructive',
+      })
+    },
+  })
+
+  const update = useMutation({
+    mutationFn: actions.update,
+    onSuccess: async () => {
+      setIsCreateItemDialogVisible(false)
+      setEditIndex(undefined)
+      toast({
+        title: 'Updated!',
+        description: 'Row saved successfully',
+        variant: 'destructive',
+      })
+    },
+    onError: () => {
+      toast({
+        title: 'Something went wrong.',
+        description: 'Please refresh the page and try again.',
+        variant: 'destructive',
+      })
+    },
+  })
+
+  // Mutations
+  const deleteCompany = useMutation({
+    mutationFn: actions.remove,
+    onSuccess: async ({ index }: { index: number }) => {
+      toast({
+        title: 'Updated!',
+        description: 'Row deleted successfully',
+        variant: 'destructive',
+      })
+    },
+    onError: () => {
+      toast({
+        title: 'Something went wrong.',
+        description: 'Please refresh the page and try again.',
+        variant: 'destructive',
+      })
+    },
+  })
 
   const editRow = (row: any, index: number) => {
-    setEditIndex(index);
-    setIsCreateItemDialogVisible(true);
-  };
-  const handleDeleteRow = (index: number) => {
-    const tempItems = [...companies];
-    tempItems.splice(index, 1);
-    setCompanies(tempItems);
-  };
+    setEditIndex(index)
+    setIsCreateItemDialogVisible(true)
+  }
+  const handleDeleteRow = ({ id }: { id: string }, index: number) => {
+    deleteCompany.mutate(id)
+  }
 
   const columns: ColumnDef<Task>[] = [
     {
-      id: "select",
+      id: 'select',
       header: ({ table }) => (
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
@@ -86,39 +112,50 @@ const ItemTable = ({ data }: { data: any }) => {
       enableHiding: false,
     },
     {
-      accessorKey: "name",
+      accessorKey: 'name',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Name" />
       ),
-      cell: ({ row }) => <div className="w-[20px]">{row.index + 1}</div>,
+      cell: ({ row }) => (
+        <div className="w-[100px]">{row.getValue('name')}</div>
+      ),
       enableSorting: false,
       enableHiding: false,
     },
     {
-      accessorKey: "hsnCode",
+      accessorKey: 'hsn',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="HSN Code" />
       ),
-      cell: ({ row }) => (
-        <div className="w-[80px]">{row.getValue("hsnCode")}</div>
-      ),
+      cell: ({ row }) => <div className="w-[80px]">{row.getValue('hsn')}</div>,
     },
     {
-      accessorKey: "unit",
+      accessorKey: 'quantity',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Unit" />
       ),
-      cell: ({ row }) => <div className="w-[80px]">{row.getValue("unit")}</div>,
+      cell: ({ row }) => (
+        <div className="w-[80px]">{row.getValue('quantity')}</div>
+      ),
     },
     {
-      accessorKey: "rate",
+      accessorKey: 'discount',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Discount (%)" />
+      ),
+      cell: ({ row }) => (
+        <div className="w-[80px]">{row.getValue('discount')}</div>
+      ),
+    },
+    {
+      accessorKey: 'rate',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Rate" />
       ),
-      cell: ({ row }) => <div className="w-[80px]">{row.getValue("rate")}</div>,
+      cell: ({ row }) => <div className="w-[80px]">{row.getValue('rate')}</div>,
     },
     {
-      id: "actions",
+      id: 'actions',
       cell: ({ row }) => (
         <DataTableRowActions
           row={row}
@@ -127,23 +164,38 @@ const ItemTable = ({ data }: { data: any }) => {
         />
       ),
     },
-  ];
-  const onAddRow = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    setIsCreateItemDialogVisible(!isCreateItemDialogVisible);
-  };
+  ]
 
-  const handleSubmit = (data: ItemFormValues) => {};
+  const onAddRow = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+    setEditIndex(undefined)
+    setIsCreateItemDialogVisible(!isCreateItemDialogVisible)
+  }
+
+  const handleSubmit = (data: ItemFormFields) => {
+    if (editIndex !== undefined) {
+      update.mutate(JSON.stringify({ ...data, id: items[editIndex].id }))
+      return
+    }
+    save.mutate(JSON.stringify({ ...data }))
+    setIsCreateItemDialogVisible(false)
+  }
+
+  useEffect(() => {
+    setItems(data)
+  }, [data])
+
   return (
     <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
       <AddItemForm
         isOpen={isCreateItemDialogVisible}
         setOpen={setIsCreateItemDialogVisible}
-        defaultValues={companyForm}
+        value={editIndex !== undefined ? items[editIndex] : undefined}
         onSubmit={handleSubmit}
+        isSubmitting={update.isPending || save.isPending}
       />
-      <DataTable data={companies} columns={columns} onAddRow={onAddRow} />
+      <DataTable data={items} columns={columns} onAddRow={onAddRow} />
     </div>
-  );
-};
-export default ItemTable;
+  )
+}
+export default ItemTable

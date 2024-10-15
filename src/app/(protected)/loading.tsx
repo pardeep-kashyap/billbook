@@ -1,4 +1,4 @@
-import { PostItem } from "@/components/post-item";
+import { PostItem } from '@/components/post-item'
 
 export default function DashboardLoading() {
   return (
@@ -9,5 +9,5 @@ export default function DashboardLoading() {
       <PostItem.Skeleton />
       <PostItem.Skeleton />
     </div>
-  );
+  )
 }

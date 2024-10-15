@@ -1,3 +1,3 @@
-import Table from "./ItemTable";
+import Table from './ItemTable'
 
-export default Table;
+export default Table

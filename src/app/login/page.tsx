@@ -1,9 +1,9 @@
 // pages/login.js
 
-import React from "react";
-import Head from "next/head";
-import { LoginForm } from "@/components/LoginTemplate";
-import { Icons } from "@/components/icons";
+import React from 'react'
+import Head from 'next/head'
+import { LoginForm } from '@/components/LoginTemplate'
+import { Icons } from '@/components/icons'
 
 const Login = () => {
   return (
@@ -27,7 +27,7 @@ const Login = () => {
         <LoginForm />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

@@ -1,21 +1,21 @@
-"use client";
+'use client'
 
-import * as React from "react";
-import Link from "next/link";
-import { useSelectedLayoutSegment } from "next/navigation";
-import { MainNavItem } from "types";
-import { siteConfig } from "@/config/site";
-import { Icons } from "@/components/icons";
-import { UserNav } from "./task/user-nav";
+import * as React from 'react'
+import Link from 'next/link'
+import { useSelectedLayoutSegment } from 'next/navigation'
+import { MainNavItem } from 'types'
+import { siteConfig } from '@/config/site'
+import { Icons } from '@/components/icons'
+import { UserNav } from './task/user-nav'
 
 interface MainNavProps {
-  items?: MainNavItem[];
-  children?: React.ReactNode;
+  items?: MainNavItem[]
+  children?: React.ReactNode
 }
 
 export function MainNav({ items, children }: MainNavProps) {
-  const segment = useSelectedLayoutSegment();
-  const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false);
+  const segment = useSelectedLayoutSegment()
+  const [showMobileMenu, setShowMobileMenu] = React.useState<boolean>(false)
 
   return (
     <div className="flex gap-6 md:gap-10 flex justify-between w-full">
@@ -57,5 +57,5 @@ export function MainNav({ items, children }: MainNavProps) {
 
       <UserNav />
     </div>
-  );
+  )
 }

@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { signOut } from "next-auth/react";
+import Link from 'next/link'
+import { signOut } from 'next-auth/react'
 
 import {
   DropdownMenu,
@@ -9,15 +9,15 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { UserAvatar } from "@/components/user-avatar";
+} from '@/components/ui/dropdown-menu'
+import { UserAvatar } from '@/components/user-avatar'
 
 interface UserAccountNavProps extends React.HTMLAttributes<HTMLDivElement> {
   user: {
-    image: string;
-    name: string;
-    email: string;
-  };
+    image: string
+    name: string
+    email: string
+  }
 }
 
 export function UserAccountNav({ user }: UserAccountNavProps) {
@@ -51,15 +51,15 @@ export function UserAccountNav({ user }: UserAccountNavProps) {
         <DropdownMenuItem
           className="cursor-pointer"
           onSelect={(event) => {
-            event.preventDefault();
+            event.preventDefault()
             signOut({
               callbackUrl: `${window.location.origin}/login`,
-            });
+            })
           }}
         >
           Sign out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

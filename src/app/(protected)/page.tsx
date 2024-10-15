@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 import {
   CardHeader,
@@ -6,12 +6,12 @@ import {
   CardContent,
   CardDescription,
   Card,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { CalendarDateRangePicker } from "@/components/dashboard/date-range-picker";
-import { Overview } from "@/components/dashboard/overview";
-import { RecentSales } from "@/components/dashboard/recent-sales";
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { CalendarDateRangePicker } from '@/components/dashboard/date-range-picker'
+import { Overview } from '@/components/dashboard/overview'
+import { RecentSales } from '@/components/dashboard/recent-sales'
 
 const Home = () => {
   return (
@@ -166,7 +166,7 @@ const Home = () => {
         </Tabs>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

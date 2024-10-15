@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   const json = parseJwt(authorization)
   try {
     const result = await getAllItems({
-      TableName: 'company',
+      TableName: 'item',
       KeyConditionExpression: 'tenantId = :tenantId',
       IndexName: 'tenantId-index',
       ScanIndexForward: false,
@@ -45,7 +45,7 @@ export async function PUT(request: Request) {
 
     const result = await putItem(
       { ...body, tenantId: json.tenantId, id: body.id ?? randomUUID() },
-      'company',
+      'item',
     )
     return Response.json({
       revalidated: true,
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
 
     const result = await putItem(
       { ...body, tenantId: json.tenantId, id: randomUUID() },
-      'company',
+      'item',
     )
     return Response.json({
       revalidated: true,
@@ -103,7 +103,7 @@ export async function DELETE(request: Request) {
   }
 
   try {
-    const result = await deleteItem({ id, tenantId: json.tenantId }, 'company')
+    const result = await deleteItem({ id, tenantId: json.tenantId }, 'item')
     return new Response(JSON.stringify(result), {
       status: result.statusCode,
       headers: {

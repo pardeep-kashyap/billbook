@@ -1,4 +1,4 @@
-import AddNewCompany from "./AddNewCompany";
-import CompanyTable from "./CompanyTable";
+import AddNewCompany from './AddNewCompany'
+import CompanyTable from './CompanyTable'
 
-export { AddNewCompany, CompanyTable };
+export { AddNewCompany, CompanyTable }

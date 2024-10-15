@@ -1,38 +1,38 @@
-import { ROUTE_CONSTANTS } from "@/constants/routeConstants"
-import { DashboardConfig } from "types"
+import { ROUTE_CONSTANTS } from '@/constants/routeConstants'
+import { DashboardConfig } from 'types'
 
 export const dashboardConfig: DashboardConfig = {
   mainNav: [
     {
-      title: "Documentation",
-      href: "/docs",
+      title: 'Documentation',
+      href: '/docs',
     },
     {
-      title: "Support",
-      href: "/support",
+      title: 'Support',
+      href: '/support',
       disabled: true,
     },
   ],
   sidebarNav: [
     {
-      title: "Dashboard",
+      title: 'Dashboard',
       href: ROUTE_CONSTANTS.HOME,
-      icon: "circleGauge",
+      icon: 'circleGauge',
     },
     {
-      title: "Items",
+      title: 'Items',
       href: ROUTE_CONSTANTS.ITEMS,
-      icon: "page",
+      icon: 'page',
     },
     {
-      title: "Invoice",
+      title: 'Invoice',
       href: ROUTE_CONSTANTS.INVOICE,
-      icon: "post",
+      icon: 'post',
     },
     {
-      title: "Company",
+      title: 'Company',
       href: ROUTE_CONSTANTS.COMPANY,
-      icon: "building",
+      icon: 'building',
     },
   ],
 }

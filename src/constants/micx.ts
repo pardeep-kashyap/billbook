@@ -1,0 +1,1 @@
+export const HSN_CODES = ['8201', '8205']

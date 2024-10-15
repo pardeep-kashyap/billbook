@@ -1,99 +1,98 @@
-"use client";
-import { useState } from "react";
-import { DataTable } from "@/components/task/data-table";
-import AddCompany, { CompanyFormFields } from "../AddNewCompany/AddNewCompany";
-import { Task } from "@/app/(protected)/item/data/schema";
-import { DataTableColumnHeader } from "@/components/task/data-table-column-header";
-import { DataTableRowActions } from "@/components/task/data-table-row-actions";
-import { Checkbox } from "@radix-ui/react-checkbox";
-import { ColumnDef } from "@tanstack/react-table";
-import { useMutation } from "@tanstack/react-query";
-import * as actions from "@/app/actions/company";
-import { toast } from "@/components/ui/use-toast";
+'use client'
+import { useEffect, useState } from 'react'
+import { DataTable } from '@/components/task/data-table'
+import AddCompany, { CompanyFormFields } from '../AddNewCompany/AddNewCompany'
+import { Task } from '@/app/(protected)/item/data/schema'
+import { DataTableColumnHeader } from '@/components/task/data-table-column-header'
+import { DataTableRowActions } from '@/components/task/data-table-row-actions'
+import { Checkbox } from '@radix-ui/react-checkbox'
+import { ColumnDef } from '@tanstack/react-table'
+import { useMutation } from '@tanstack/react-query'
+import * as actions from '@/app/actions/company'
+import { toast } from '@/components/ui/use-toast'
 
 const CompanyTable = ({ data }: { data: any[] }) => {
-  const [companies, setCompanies] = useState<CompanyFormFields[]>(data);
+  const [companies, setCompanies] = useState<CompanyFormFields[]>([])
 
-  const [editIndex, setEditIndex] = useState<undefined | number>();
+  const [editIndex, setEditIndex] = useState<undefined | number>()
 
   const [isCreateItemDialogVisible, setIsCreateItemDialogVisible] =
-    useState(false);
+    useState(false)
 
   // Mutations
   const save = useMutation({
     mutationFn: actions.save,
     onSuccess: async () => {
       toast({
-        title: "Saved!",
-        description: "Company saved successfully",
-        variant: "destructive",
-      });
+        title: 'Saved!',
+        description: 'Company saved successfully',
+        variant: 'destructive',
+      })
     },
     onError: () => {
       toast({
-        title: "Something went wrong.",
-        description: "Please refresh the page and try again.",
-        variant: "destructive",
-      });
+        title: 'Something went wrong.',
+        description: 'Please refresh the page and try again.',
+        variant: 'destructive',
+      })
     },
-  });
+  })
 
   const update = useMutation({
     mutationFn: actions.update,
     onSuccess: async () => {
+      setIsCreateItemDialogVisible(false)
+      setEditIndex(undefined)
       toast({
-        title: "Updated!",
-        description: "Row saved successfully",
-        variant: "destructive",
-      });
+        title: 'Updated!',
+        description: 'Row saved successfully',
+        variant: 'destructive',
+      })
     },
     onError: () => {
       toast({
-        title: "Something went wrong.",
-        description: "Please refresh the page and try again.",
-        variant: "destructive",
-      });
+        title: 'Something went wrong.',
+        description: 'Please refresh the page and try again.',
+        variant: 'destructive',
+      })
     },
-  });
+  })
 
   // Mutations
   const deleteCompany = useMutation({
     mutationFn: actions.remove,
     onSuccess: async ({ index }: { index: number }) => {
-      const tempItems = [...companies];
-      tempItems.splice(index, 1);
-      setCompanies(tempItems);
       toast({
-        title: "Updated!",
-        description: "Row deleted successfully",
-        variant: "destructive",
-      });
+        title: 'Updated!',
+        description: 'Row deleted successfully',
+        variant: 'destructive',
+      })
     },
     onError: () => {
       toast({
-        title: "Something went wrong.",
-        description: "Please refresh the page and try again.",
-        variant: "destructive",
-      });
+        title: 'Something went wrong.',
+        description: 'Please refresh the page and try again.',
+        variant: 'destructive',
+      })
     },
-  });
+  })
 
   const editRow = (row: any, index: number) => {
-    setEditIndex(index);
-    setIsCreateItemDialogVisible(true);
-  };
+    setEditIndex(index)
+    setIsCreateItemDialogVisible(true)
+  }
   const handleDeleteRow = ({ id }: { id: string }, index: number) => {
-    deleteCompany.mutate(id);
-  };
+    deleteCompany.mutate(id)
+  }
 
   const columns: ColumnDef<Task>[] = [
     {
-      id: "select",
+      id: 'select',
       header: ({ table }) => (
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
@@ -112,77 +111,86 @@ const CompanyTable = ({ data }: { data: any[] }) => {
       enableHiding: false,
     },
     {
-      accessorKey: "name",
+      accessorKey: 'name',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Name" />
       ),
       cell: ({ row }) => (
-        <div className="w-[100px] line-clamp-1">{row.getValue("name")}</div>
+        <div className="w-[120px] line-clamp-1">{row.getValue('name')}</div>
       ),
-      enableSorting: false,
-      enableHiding: false,
     },
     {
-      accessorKey: "gst",
+      accessorKey: 'gst',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="GST" />
       ),
       cell: ({ row }) => (
-        <div className="w-[120px] line-clamp-1">{row.getValue("gst")}</div>
+        <div className="w-[120px] line-clamp-1">{row.getValue('gst')}</div>
       ),
     },
     {
-      accessorKey: "address",
+      accessorKey: 'contactNo',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Contact No." />
+      ),
+      cell: ({ row }) => (
+        <div className="w-[120px] line-clamp-1">
+          {row.getValue('contactNo')}
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'address',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Address" />
       ),
       cell: ({ row }) => (
-        <div className="w-[80px] line-clamp-1">{row.getValue("address")}</div>
+        <div className="w-[80px] line-clamp-1">{row.getValue('address')}</div>
       ),
     },
 
     {
-      accessorKey: "pincode",
+      accessorKey: 'pincode',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Pincode" />
       ),
       cell: ({ row }) => (
-        <div className="w-[80px] line-clamp-1">{row.getValue("pincode")}</div>
+        <div className="w-[80px] line-clamp-1">{row.getValue('pincode')}</div>
       ),
     },
 
     {
-      accessorKey: "city",
+      accessorKey: 'city',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="City " />
+        <DataTableColumnHeader column={column} title="City" />
       ),
       cell: ({ row }) => (
-        <div className="w-[80px] line-clamp-1"> {row.getValue("city")}</div>
+        <div className="w-[80px] line-clamp-1"> {row.getValue('city')}</div>
       ),
     },
     {
-      accessorKey: "state",
+      accessorKey: 'state',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="state" />
+        <DataTableColumnHeader column={column} title="State" />
       ),
       cell: ({ row }) => (
-        <div className="w-[80px] line-clamp-1"> {row.getValue("state")}</div>
+        <div className="w-[80px] line-clamp-1"> {row.getValue('state')}</div>
       ),
     },
     {
-      accessorKey: "description",
+      accessorKey: 'description',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Description" />
       ),
       cell: ({ row }) => (
         <div className="w-[80px] line-clamp-1">
-          {" "}
-          -{row.getValue("description")}
+          {row.getValue('description')}
         </div>
       ),
     },
     {
-      id: "actions",
+      id: 'actions',
+      enablePinning: true,
       cell: ({ row }) => (
         <DataTableRowActions
           row={row}
@@ -191,34 +199,38 @@ const CompanyTable = ({ data }: { data: any[] }) => {
         />
       ),
     },
-  ];
+  ]
 
   const onAddRow = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    setEditIndex(undefined);
-    setIsCreateItemDialogVisible(!isCreateItemDialogVisible);
-  };
+    event.preventDefault()
+    setEditIndex(undefined)
+    setIsCreateItemDialogVisible(!isCreateItemDialogVisible)
+  }
 
   const handleSubmit = (data: CompanyFormFields) => {
     if (editIndex !== undefined) {
-      update.mutate(JSON.stringify({ ...data, id: companies[editIndex].id }));
-      return;
+      update.mutate(JSON.stringify({ ...data, id: companies[editIndex].id }))
+      return
     }
-    save.mutate(JSON.stringify({ ...data }));
-    setIsCreateItemDialogVisible(false);
-  };
+    save.mutate(JSON.stringify({ ...data }))
+    setIsCreateItemDialogVisible(false)
+  }
+
+  useEffect(() => {
+    setCompanies(data)
+  }, [data])
 
   return (
     <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
       <AddCompany
         isOpen={isCreateItemDialogVisible}
         setOpen={setIsCreateItemDialogVisible}
-        value={editIndex ? companies[editIndex] : undefined}
+        value={editIndex !== undefined ? companies[editIndex] : undefined}
         onSubmit={handleSubmit}
         isSubmitting={update.isPending || save.isPending}
       />
       <DataTable data={companies} columns={columns} onAddRow={onAddRow} />
     </div>
-  );
-};
-export default CompanyTable;
+  )
+}
+export default CompanyTable

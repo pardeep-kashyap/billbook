@@ -1,25 +1,25 @@
-import { Inter as FontSans } from "next/font/google";
-import localFont from "next/font/local";
-import { absoluteUrl, cn } from "@/lib/utils";
+import { Inter as FontSans } from 'next/font/google'
+import localFont from 'next/font/local'
+import { absoluteUrl, cn } from '@/lib/utils'
 
-import { notFound } from "next/navigation";
-import "@/styles/globals.css";
+import { notFound } from 'next/navigation'
+import '@/styles/globals.css'
 
-import { dashboardConfig } from "@/config/dashboard";
+import { dashboardConfig } from '@/config/dashboard'
 // import { getCurrentUser } from "@/lib/session"
-import { MainNav } from "@/components/main-nav";
-import { DashboardNav } from "@/components/nav";
-import { SiteFooter } from "@/components/site-footer";
-import { UserAccountNav } from "@/components/user-account-nav";
+import { MainNav } from '@/components/main-nav'
+import { DashboardNav } from '@/components/nav'
+import { SiteFooter } from '@/components/site-footer'
+import { UserAccountNav } from '@/components/user-account-nav'
 
 interface DashboardLayoutProps {
-  children?: React.ReactNode;
+  children?: React.ReactNode
 }
 
 const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
+  subsets: ['latin'],
+  variable: '--font-sans',
+})
 
 // Font files can be colocated inside of `pages`
 // const fontHeading = localFont({
@@ -40,8 +40,8 @@ export default async function DashboardLayout({
     <html>
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
+          'min-h-screen bg-background font-sans antialiased',
+          fontSans.variable,
           // fontHeading.variable
         )}
       >
@@ -51,9 +51,9 @@ export default async function DashboardLayout({
               <MainNav items={dashboardConfig.mainNav} />
               <UserAccountNav
                 user={{
-                  name: "Pardeep",
-                  image: "Pardeep",
-                  email: "Pardeep",
+                  name: 'Pardeep',
+                  image: 'Pardeep',
+                  email: 'Pardeep',
                 }}
               />
             </div>
@@ -70,5 +70,5 @@ export default async function DashboardLayout({
         </div>
       </body>
     </html>
-  );
+  )
 }

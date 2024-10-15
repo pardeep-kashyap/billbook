@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import {
   Form,
   FormControl,
@@ -10,88 +10,83 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../ui/form";
-import { Input } from "../../ui/input";
-import { Textarea } from "../../ui/textarea";
-import { Button } from "../../ui/button";
+} from '../../ui/form'
+import { Input } from '../../ui/input'
+import { Textarea } from '../../ui/textarea'
+import { Button } from '../../ui/button'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "../../ui/dialog";
-import { Dispatch, SetStateAction, useEffect } from "react";
+} from '../../ui/dialog'
+import { Dispatch, SetStateAction, useEffect } from 'react'
 
 const schema = z.object({
   name: z
     .string()
     .min(1, {
-      message: "Name is required.",
+      message: 'Name is required.',
     })
     .max(100, {
-      message: "Name must not be longer than 30 characters.",
+      message: 'Name must not be longer than 30 characters.',
     }),
   address: z
     .string()
     .min(1, {
-      message: "Address is required.",
+      message: 'Address is required.',
     })
     .max(100, {
-      message: "Address must not be longer than 30 characters.",
+      message: 'Address must not be longer than 30 characters.',
     }),
   pincode: z
     .string()
     .min(1, {
-      message: "Pincode is required.",
+      message: 'Pincode is required.',
     })
     .max(100, {
-      message: "Pincode must not be longer than 30 characters.",
+      message: 'Pincode must not be longer than 30 characters.',
     }),
   state: z
     .string()
     .min(1, {
-      message: "State is required.",
+      message: 'State is required.',
     })
     .max(100, {
-      message: "State must not be longer than 30 characters.",
+      message: 'State must not be longer than 30 characters.',
     }),
-  city: z
-    .string()
-    .min(1, {
-      message: "City is required.",
-    })
-    .max(100, {
-      message: "City must not be longer than 30 characters.",
-    }),
+  city: z.string().min(1, {
+    message: 'City is required.',
+  }),
   gst: z
     .string()
     .min(15, {
-      message: "GST should be 15 characters long.",
+      message: 'GST should be 15 characters long.',
     })
     .max(15, {
-      message: "GST should be 15 characters long.",
+      message: 'GST should be 15 characters long.',
     }),
   contactNo: z.string().min(10, {
-    message: "Contact no should be 15 characters long.",
+    message: 'Contact should be 10 characters long.',
   }),
-  description: z.string().max(160).min(4),
+  description: z.string().optional(),
   id: z.string().optional(),
-});
+})
 
-export type CompanyFormFields = z.infer<typeof schema>;
+export type CompanyFormFields = z.infer<typeof schema>
 
 // This can come from your database or API.
 const defaultValues: Partial<CompanyFormFields> = {
-  id: "",
-  name: "",
-  contactNo: "",
-  address: "",
-  gst: "",
-  pincode: "",
-  city: "",
-  state: "",
-  description: "",
-};
+  id: '',
+  name: '',
+  contactNo: '',
+  address: '',
+  gst: '',
+  pincode: '',
+  city: '',
+  state: '',
+  description: '',
+}
 
 const AddCompanyDialog = ({
   isOpen,
@@ -100,32 +95,32 @@ const AddCompanyDialog = ({
   onSubmit,
   value,
 }: {
-  isOpen: boolean;
-  isSubmitting?: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  onSubmit: (data: CompanyFormFields) => void;
-  value: Partial<CompanyFormFields> | undefined;
+  isOpen: boolean
+  isSubmitting?: boolean
+  setOpen: Dispatch<SetStateAction<boolean>>
+  onSubmit: (data: CompanyFormFields) => void
+  value: Partial<CompanyFormFields> | undefined
 }) => {
   const form = useForm<CompanyFormFields>({
     resolver: zodResolver(schema),
     defaultValues: value ?? defaultValues,
-    mode: "onBlur",
+    mode: 'onBlur',
     disabled: isSubmitting,
-  });
+  })
 
   const handleSubmit = (data: CompanyFormFields) => {
-    onSubmit(data);
-  };
+    onSubmit(data)
+  }
 
   useEffect(() => {
-    form.reset(value);
-  }, [form, value]);
+    form.reset(value)
+  }, [form, value])
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-xl	 ">
+      <DialogContent className="sm:max-w-xl ">
         <DialogHeader>
-          <DialogTitle>Add Company</DialogTitle>
+          <DialogTitle> Company Details</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -256,12 +251,12 @@ const AddCompanyDialog = ({
             />
             <div></div>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : "Save"}
+              {isSubmitting ? 'Saving...' : 'Save'}
             </Button>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  );
-};
-export default AddCompanyDialog;
+  )
+}
+export default AddCompanyDialog

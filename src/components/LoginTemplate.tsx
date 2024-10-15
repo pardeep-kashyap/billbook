@@ -1,26 +1,26 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
-import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
+'use client'
+import { Button } from '@/components/ui/button'
+import { useState, useEffect } from 'react'
+import { Input } from '@/components/ui/input'
+import { useRouter } from 'next/navigation'
 
 export const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const router = useRouter();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const router = useRouter()
 
   useEffect(() => {
     // This will only run on the client-side
-    console.log("Component mounted on client-side");
-  }, []);
+    console.log('Component mounted on client-side')
+  }, [])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    router.push("/dashboard");
+    e.preventDefault()
+    router.push('/dashboard')
     // Add your login logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
-  };
+    console.log('Email:', email)
+    console.log('Password:', password)
+  }
 
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -90,5 +90,5 @@ export const LoginForm = () => {
         <Button type="submit">Sign in</Button>
       </div>
     </form>
-  );
-};
+  )
+}

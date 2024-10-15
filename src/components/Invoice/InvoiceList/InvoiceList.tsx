@@ -1,26 +1,91 @@
-"use client";
-import { Task } from "@/app/(protected)/item/data/schema";
-import { Checkbox } from "@radix-ui/react-checkbox";
-import { ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "../../task/data-table";
-import { DataTableColumnHeader } from "../../task/data-table-column-header";
-import { DataTableRowActions } from "../../task/data-table-row-actions";
+'use client'
+import { useEffect, useState } from 'react'
+import { DataTable } from '@/components/task/data-table'
+import { Task } from '@/app/(protected)/item/data/schema'
+import { DataTableColumnHeader } from '@/components/task/data-table-column-header'
+import { DataTableRowActions } from '@/components/task/data-table-row-actions'
+import { Checkbox } from '@radix-ui/react-checkbox'
+import { ColumnDef } from '@tanstack/react-table'
+import { useMutation } from '@tanstack/react-query'
+import * as actions from '@/app/actions/company'
+import { toast } from '@/components/ui/use-toast'
 
-const InvoiceList = ({ data }: { data: any }) => {
-  const editRow = (row: any, index: number) => {};
-  const handleDeleteRow = (index: number) => {};
+const InvoiceList = ({ data }: { data: any[] }) => {
+  const [isCreateItemDialogVisible, setIsCreateItemDialogVisible] =
+    useState(false)
 
-  const AddNew = () => {
-    console.log("New Added");
-  };
+  // Mutations
+  const save = useMutation({
+    mutationFn: actions.save,
+    onSuccess: async () => {
+      toast({
+        title: 'Saved!',
+        description: 'Company saved successfully',
+        variant: 'destructive',
+      })
+    },
+    onError: () => {
+      toast({
+        title: 'Something went wrong.',
+        description: 'Please refresh the page and try again.',
+        variant: 'destructive',
+      })
+    },
+  })
+
+  const update = useMutation({
+    mutationFn: actions.update,
+    onSuccess: async () => {
+      setIsCreateItemDialogVisible(false)
+      toast({
+        title: 'Updated!',
+        description: 'Row saved successfully',
+        variant: 'destructive',
+      })
+    },
+    onError: () => {
+      toast({
+        title: 'Something went wrong.',
+        description: 'Please refresh the page and try again.',
+        variant: 'destructive',
+      })
+    },
+  })
+
+  // Mutations
+  const deleteCompany = useMutation({
+    mutationFn: actions.remove,
+    onSuccess: async ({ index }: { index: number }) => {
+      toast({
+        title: 'Updated!',
+        description: 'Row deleted successfully',
+        variant: 'destructive',
+      })
+    },
+    onError: () => {
+      toast({
+        title: 'Something went wrong.',
+        description: 'Please refresh the page and try again.',
+        variant: 'destructive',
+      })
+    },
+  })
+
+  const editRow = (row: any, index: number) => {
+    setIsCreateItemDialogVisible(true)
+  }
+  const handleDeleteRow = ({ id }: { id: string }, index: number) => {
+    deleteCompany.mutate(id)
+  }
+
   const columns: ColumnDef<Task>[] = [
     {
-      id: "select",
+      id: 'select',
       header: ({ table }) => (
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
@@ -39,35 +104,62 @@ const InvoiceList = ({ data }: { data: any }) => {
       enableHiding: false,
     },
     {
-      accessorKey: "company",
+      accessorKey: 'Invoice no',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Company Name" />
+        <DataTableColumnHeader column={column} title="Name" />
       ),
-      cell: ({ row }) => <div className="w-[20px]">{row.index + 1}</div>,
-      enableSorting: false,
-      enableHiding: false,
+      cell: ({ row }) => (
+        <div className="w-[120px] line-clamp-1">
+          {row.getValue('invoiceNo')}
+        </div>
+      ),
     },
     {
-      accessorKey: "gstNo",
+      accessorKey: 'gst',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="GST" />
       ),
       cell: ({ row }) => (
-        <div className="w-[80px]">{row.getValue("gstNo")}</div>
+        <div className="w-[120px] line-clamp-1">{row.getValue('gst')}</div>
+      ),
+    },
+    {
+      accessorKey: 'contactNo',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Contact No." />
+      ),
+      cell: ({ row }) => (
+        <div className="w-[120px] line-clamp-1">
+          {row.getValue('contactNo')}
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'totalAmount',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Address" />
+      ),
+      cell: ({ row }) => (
+        <div className="w-[80px] line-clamp-1">
+          {row.getValue('totalAmount')}
+        </div>
       ),
     },
 
     {
-      accessorKey: "amount",
+      accessorKey: 'date',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Amount ₹" />
+        <DataTableColumnHeader column={column} title="Date" />
       ),
       cell: ({ row }) => (
-        <div className="w-[80px]"> {row.getValue("amount")}</div>
+        <div className="w-[80px] line-clamp-1">
+          {row.getValue('description')}
+        </div>
       ),
     },
     {
-      id: "actions",
+      id: 'actions',
+      enablePinning: true,
       cell: ({ row }) => (
         <DataTableRowActions
           row={row}
@@ -76,9 +168,17 @@ const InvoiceList = ({ data }: { data: any }) => {
         />
       ),
     },
-  ];
+  ]
 
-  return <DataTable data={data} columns={columns} onAddRow={AddNew} />;
-};
+  const onAddRow = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+    setIsCreateItemDialogVisible(!isCreateItemDialogVisible)
+  }
 
-export default InvoiceList;
+  return (
+    <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
+      <DataTable data={data} columns={columns} onAddRow={onAddRow} />
+    </div>
+  )
+}
+export default InvoiceList

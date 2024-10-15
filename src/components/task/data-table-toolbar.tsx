@@ -1,44 +1,44 @@
-"use client";
+'use client'
 
-import { Cross2Icon } from "@radix-ui/react-icons";
-import { Table } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { DataTableViewOptions } from "./data-table-view-options";
-import { Icons } from "../icons";
-import { ROUTE_CONSTANTS } from "@/constants/routeConstants";
-import { useRouter } from "next/navigation";
+import { Cross2Icon } from '@radix-ui/react-icons'
+import { Table } from '@tanstack/react-table'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { DataTableViewOptions } from './data-table-view-options'
+import { Icons } from '../icons'
+import { ROUTE_CONSTANTS } from '@/constants/routeConstants'
+import { useRouter } from 'next/navigation'
 const routes = {
   [ROUTE_CONSTANTS.INVOICE]: ROUTE_CONSTANTS.NEW_INVOICE,
-};
+}
 interface DataTableToolbarProps<TData> {
-  table: Table<TData>;
-  onAddRow: (evt: React.MouseEvent<HTMLButtonElement>) => void;
+  table: Table<TData>
+  onAddRow: (evt: React.MouseEvent<HTMLButtonElement>) => void
 }
 
 export function DataTableToolbar<TData>({
   table,
   onAddRow,
 }: DataTableToolbarProps<TData>) {
-  const isFiltered = table.getState().columnFilters.length > 0;
-  const router = useRouter();
+  const isFiltered = table.getState().columnFilters.length > 0
+  const router = useRouter()
 
   const handleAddNewItem = (evt: React.MouseEvent<HTMLButtonElement>) => {
     if (routes[window.location.pathname]) {
-      router.push(routes[window.location.pathname]);
-      return;
+      router.push(routes[window.location.pathname])
+      return
     }
-    onAddRow(evt);
-  };
+    onAddRow(evt)
+  }
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter tasks..."
-          // value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-          // onChange={(event) =>
-          //   table.getColumn("title")?.setFilterValue(event.target.value)
-          // }
+          placeholder="Filter..."
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+          onChange={(event) =>
+            table.getColumn('name')?.setFilterValue(event.target.value)
+          }
           className="h-8 w-[150px] lg:w-[250px]"
         />
         {/* {table.getColumn("status") && (
@@ -79,5 +79,5 @@ export function DataTableToolbar<TData>({
         Add
       </Button>
     </div>
-  );
+  )
 }

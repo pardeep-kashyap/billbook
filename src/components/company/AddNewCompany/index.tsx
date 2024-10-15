@@ -1,3 +1,3 @@
-import AddNewCompany from "./AddNewCompany";
+import AddNewCompany from './AddNewCompany'
 
-export default AddNewCompany;
+export default AddNewCompany
