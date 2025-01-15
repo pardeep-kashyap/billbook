@@ -187,13 +187,16 @@ const ItemTable = ({ data }: { data: any }) => {
 
   return (
     <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
-      <AddItemForm
-        isOpen={isCreateItemDialogVisible}
-        setOpen={setIsCreateItemDialogVisible}
-        value={editIndex !== undefined ? items[editIndex] : undefined}
-        onSubmit={handleSubmit}
-        isSubmitting={update.isPending || save.isPending}
-      />
+      
+      { isCreateItemDialogVisible && 
+                <AddItemForm
+                isOpen={isCreateItemDialogVisible}
+                setOpen={setIsCreateItemDialogVisible}
+                value={editIndex !== undefined ? items[editIndex] : undefined}
+                onSubmit={handleSubmit}
+                isSubmitting={update.isPending || save.isPending}
+              />
+      }
       <DataTable data={items} columns={columns} onAddRow={onAddRow} />
     </div>
   )

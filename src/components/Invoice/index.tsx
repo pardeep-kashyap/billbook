@@ -1,4 +1,4 @@
 import InvoiceList from './InvoiceList/InvoiceList'
-import CreateInvoice from './CreateInvoice/CreateInvoice'
+import CreateInvoice from './AddNewInvoice/AddNewInvoice'
 
 export { InvoiceList, CreateInvoice }

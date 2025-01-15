@@ -58,7 +58,7 @@ const schema = z.object({
   city: z.string().min(1, {
     message: 'City is required.',
   }),
-  gst: z
+  gstin: z
     .string()
     .min(15, {
       message: 'GST should be 15 characters long.',
@@ -71,6 +71,10 @@ const schema = z.object({
   }),
   description: z.string().optional(),
   id: z.string().optional(),
+  bankName: z.string().optional(),
+  branchName: z.string().optional(),
+  accountNumber: z.string().optional(),
+  ifscCode: z.string().optional(),
 })
 
 export type CompanyFormFields = z.infer<typeof schema>
@@ -81,7 +85,7 @@ const defaultValues: Partial<CompanyFormFields> = {
   name: '',
   contactNo: '',
   address: '',
-  gst: '',
+  gstin: '',
   pincode: '',
   city: '',
   state: '',
@@ -118,14 +122,14 @@ const AddCompanyDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-xl ">
+      <DialogContent className="md:max-w-3xl ">
         <DialogHeader>
           <DialogTitle> Company Details</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-0 grid grid-cols-2	 w-full gap-3	"
+            className="space-y-0 grid grid-cols-3	 w-full gap-4	"
           >
             <FormField
               control={form.control}
@@ -144,12 +148,12 @@ const AddCompanyDialog = ({
 
             <FormField
               control={form.control}
-              name="gst"
+              name="gstin"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel> GST</FormLabel>
+                  <FormLabel> GSTIN</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter an GST no" {...field} />
+                    <Input placeholder="Enter an GSTIN no" {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -249,10 +253,64 @@ const AddCompanyDialog = ({
                 </FormItem>
               )}
             />
-            <div></div>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Saving...' : 'Save'}
-            </Button>
+            <FormField
+              control={form.control}
+              name="bankName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bank Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter Bank Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="branchName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Branch Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter Branch Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="accountNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bank Account Number</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter Account Number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="ifscCode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bank Branch IFSC</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter IFSC Code" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="col-span-3 flex justify-end mt-4">
+              <Button type="button" variant="secondary" onClick={() => setOpen(false)} className="w-auto mr-2">Cancel</Button>
+              <Button type="submit" disabled={isSubmitting} className="w-auto">
+                {isSubmitting ? 'Saving...' : 'Save'}
+              </Button>
+            </div>
           </form>
         </Form>
       </DialogContent>

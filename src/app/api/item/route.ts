@@ -7,6 +7,7 @@ export async function GET(request: Request) {
   const { headers } = request
   const authorization = headers.get('Authorization') ?? ''
   const json = parseJwt(authorization)
+
   try {
     const result = await getAllItems({
       TableName: 'item',

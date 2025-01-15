@@ -43,12 +43,12 @@ export const itemFormSchema = z.object({
   name: z.string({ required_error: 'Please provide name' }).min(1, {
     message: 'Please provide name',
   }),
-  quantity: z.coerce
-    .number({
-      required_error: 'Please provide quantity',
-    })
-    .min(1, 'Please provide quantity'),
-  hsn: z.string({
+  // quantity: z.coerce
+  //   .number({
+  //     required_error: 'Please provide quantity',
+  //   })
+  //   .min(1, 'Please provide quantity'),
+  hsn: z.coerce.string({
     required_error: 'Please provide HSN code',
   }),
   rate: z.coerce
@@ -60,21 +60,19 @@ export const itemFormSchema = z.object({
     })
     .min(1, 'Please provide Rate'),
   description: z.string().optional(),
-  discount: z.coerce
-    .number({
-      required_error: 'Please provide discount',
-    })
-    .positive({
-      message: 'Please provide discount',
-    })
-    .min(1, 'Please provide discount')
-    .min(0, 'Please provide discount')
-    .max(100)
-    .optional(),
-  amount: z.number().positive().min(0).optional(),
-  grossTotalAmount: z.number().positive().min(0).optional(),
-  discountAmount: z.number().optional(),
-  tax: z.number().optional(),
+  // discount: z.coerce
+  //   .number({
+  //     required_error: 'Please provide discount',
+  //   })
+  //   .min(0, 'Please provide discount')
+  //   .max(100)
+  //   .optional(),
+  amount: z.number().optional(),
+  grossTotalAmount: z.number().optional(),
+  // discountAmount:  z.number().optional(),
+  tax: z.coerce.number().min(0).max(100).optional(),
+
+  quantity: z.coerce.number().min(0).max(100).optional(),
   id: z.string().optional(),
 })
 
@@ -86,7 +84,7 @@ const defaultValues: Partial<ItemFormFields> = {
   quantity: 0,
   hsn: undefined,
   rate: undefined,
-  tax: undefined,
+  tax: 0,
   description: undefined,
 }
 
@@ -96,10 +94,10 @@ const AddItemForm = ({
   setOpen,
   onSubmit,
   value,
-  readOnly,
+  readOnly=false,
 }: {
   isOpen?: boolean
-  readOnly: boolean
+  readOnly?: boolean
   isSubmitting?: boolean
   setOpen: Dispatch<SetStateAction<boolean>>
   onSubmit: (data: ItemFormFields) => void
@@ -128,20 +126,20 @@ const AddItemForm = ({
   const getAmount = useCallback(
     ({
       rate,
-      discount,
+      tax,
       quantity,
     }: {
       rate: number
-      discount: number
+      tax: number
       quantity: number
     }) => {
-      if (!isNaN(rate) && !isNaN(discount) && !isNaN(quantity)) {
+      if (!isNaN(rate) && !isNaN(tax) && !isNaN(quantity)) {
         const grossAmount = rate * quantity
-        const discountAmount = (grossAmount * discount) / 100
+        const discountAmount = (grossAmount * tax) / 100
         return {
           grossTotalAmount: grossAmount,
           discountAmount: discountAmount,
-          amount: grossAmount - discountAmount,
+          amount: grossAmount + discountAmount,
         }
       }
       return { grossTotalAmount: 0, discountAmount: 0, amount: 0 }
@@ -157,35 +155,34 @@ const AddItemForm = ({
 
   const updateCalculations = useCallback(() => {
     const rate = Number(form.getValues('rate')) || 0
-    const discount = Number(form.getValues('discount')) || 0
+    const tax = Number(form.getValues('tax')) || 0
     const quantity = Number(form.getValues('quantity')) || 0
-    const { grossTotalAmount, discountAmount, amount } = getAmount({
+    const { grossTotalAmount, amount } = getAmount({
       rate,
-      discount,
+      tax,
       quantity,
     })
     form.setValue('grossTotalAmount', grossTotalAmount)
-    form.setValue('discountAmount', discountAmount)
     form.setValue('amount', amount)
   }, [form, getAmount])
 
-  const handleCompanyChange = useCallback(
+  const handleItemChange = useCallback(
     (id: string) => {
       const selectedItem = items.find((item: ItemFormFields) => item.id === id)
       if (selectedItem) {
         form.reset({ ...selectedItem, quantity: 0 })
-        updateCalculations()
+        // updateCalculations()
       }
     },
-    [items, form, updateCalculations]
+    [items, form]
   )
 
   useEffect(() => {
-    if (value) {
+    if (value) 
       form.reset(value)
-      updateCalculations()
-    }
-  }, [form, value, updateCalculations])
+      // updateCalculations()
+    
+  }, [form, value])
 
   return (
     <Dialog open={isOpen} onOpenChange={setOpen}>
@@ -207,7 +204,7 @@ const AddItemForm = ({
                   <FormLabel> Name</FormLabel>
                   {readOnly ? (
                     <Select
-                      onValueChange={handleCompanyChange}
+                      onValueChange={handleItemChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
@@ -242,18 +239,20 @@ const AddItemForm = ({
             <FormField
               control={form.control}
               name="hsn"
-              disabled={readOnly}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>HSN Code</FormLabel>
                   {readOnly ? (
                     <FormControl>
-                      <Input type="text" {...field} value={field.value} />
+                      <Input type="text" {...field} 
+                      value={field.value || ''}
+                      disabled={readOnly}
+                      />
                     </FormControl>
                   ) : (
                     <Select
                       onValueChange={field.onChange}
-                      value={field.value}
+                      defaultValue={field.value}
                       disabled={readOnly}
                     >
                       <FormControl>
@@ -274,28 +273,29 @@ const AddItemForm = ({
                 </FormItem>
               )}
             />
-
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Enter Quantity"
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e)
-                        updateCalculations()
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+           {
+            readOnly  &&  <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantity</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Enter Quantity"
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e)
+                      updateCalculations()
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+           }
 
             <FormField
               control={form.control}
@@ -309,10 +309,6 @@ const AddItemForm = ({
                       placeholder="Enter Rate"
                       {...field}
                       disabled={readOnly}
-                      onChange={(e) => {
-                        field.onChange(e)
-                        updateCalculations()
-                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -322,8 +318,26 @@ const AddItemForm = ({
 
             <FormField
               control={form.control}
+              name="tax"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>GST / Tax(%)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Enter GST/Tax"
+                      {...field}
+                      disabled={readOnly}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* <FormField
+              control={form.control}
               name="discount"
-              disabled={readOnly}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Discount(%)</FormLabel>
@@ -342,9 +356,9 @@ const AddItemForm = ({
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
 
-            {readOnly && (
+            {/* {readOnly && (
               <FormField
                 control={form.control}
                 name="discountAmount"
@@ -363,13 +377,12 @@ const AddItemForm = ({
                   </FormItem>
                 )}
               />
-            )}
+            )} */}
 
             {readOnly && (
               <FormField
                 control={form.control}
                 name="grossTotalAmount"
-                disabled={readOnly}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Gross Total Amount</FormLabel>
@@ -378,8 +391,8 @@ const AddItemForm = ({
                         type="number"
                         placeholder="0"
                         {...field}
-                        disabled={true}
-                      />
+                        disabled={readOnly}
+                        />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -391,7 +404,6 @@ const AddItemForm = ({
               <FormField
                 control={form.control}
                 name="amount"
-                disabled={readOnly}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Amount</FormLabel>
@@ -400,8 +412,8 @@ const AddItemForm = ({
                         type="number"
                         placeholder="0"
                         {...field}
-                        disabled={true}
-                      />
+                        disabled={readOnly}
+                        />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -412,12 +424,13 @@ const AddItemForm = ({
             <FormField
               control={form.control}
               name="description"
-              disabled={readOnly}
               render={({ field }) => (
                 <FormItem className="col-span-full">
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Tell us about item" {...field} />
+                    <Textarea placeholder="Tell us about item" {...field} 
+              disabled={readOnly}
+              />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

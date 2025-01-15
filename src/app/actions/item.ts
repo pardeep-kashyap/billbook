@@ -58,8 +58,8 @@ export async function getItems() {
       new Error('Network response was not ok')
     }
 
-    const data = await response.json().catch(() => [])
 
+    const data = await response.json()
     return JSON.stringify(data ?? [])
   } catch (error) {
     console.error('Error in getItems:', error)

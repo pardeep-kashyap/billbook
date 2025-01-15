@@ -9,48 +9,14 @@ import { ColumnDef } from '@tanstack/react-table'
 import { useMutation } from '@tanstack/react-query'
 import * as actions from '@/app/actions/company'
 import { toast } from '@/components/ui/use-toast'
+import Link from 'next/link'
+import { ROUTE_CONSTANTS } from '@/constants/routeConstants'
 
 const InvoiceList = ({ data }: { data: any[] }) => {
+  console.log("data",data)
   const [isCreateItemDialogVisible, setIsCreateItemDialogVisible] =
     useState(false)
 
-  // Mutations
-  const save = useMutation({
-    mutationFn: actions.save,
-    onSuccess: async () => {
-      toast({
-        title: 'Saved!',
-        description: 'Company saved successfully',
-        variant: 'destructive',
-      })
-    },
-    onError: () => {
-      toast({
-        title: 'Something went wrong.',
-        description: 'Please refresh the page and try again.',
-        variant: 'destructive',
-      })
-    },
-  })
-
-  const update = useMutation({
-    mutationFn: actions.update,
-    onSuccess: async () => {
-      setIsCreateItemDialogVisible(false)
-      toast({
-        title: 'Updated!',
-        description: 'Row saved successfully',
-        variant: 'destructive',
-      })
-    },
-    onError: () => {
-      toast({
-        title: 'Something went wrong.',
-        description: 'Please refresh the page and try again.',
-        variant: 'destructive',
-      })
-    },
-  })
 
   // Mutations
   const deleteCompany = useMutation({
@@ -104,9 +70,20 @@ const InvoiceList = ({ data }: { data: any[] }) => {
       enableHiding: false,
     },
     {
-      accessorKey: 'Invoice no',
+      accessorKey: 'id',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Name" />
+      ),
+      cell: ({ row }) => (
+        <div className="w-[200px]">
+         <Link className="underline" href= {`${ROUTE_CONSTANTS.INVOICE}/${row.getValue('id')}`}> {row.getValue('id')} </Link>
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'invoiceNo',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Invoice No" />
       ),
       cell: ({ row }) => (
         <div className="w-[120px] line-clamp-1">
@@ -115,45 +92,45 @@ const InvoiceList = ({ data }: { data: any[] }) => {
       ),
     },
     {
-      accessorKey: 'gst',
+      accessorKey: 'company',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="GST" />
+        <DataTableColumnHeader column={column} title="Company" />
       ),
       cell: ({ row }) => (
-        <div className="w-[120px] line-clamp-1">{row.getValue('gst')}</div>
+        <div className="w-[120px] line-clamp-1">{row.getValue('company')}</div>
       ),
     },
     {
-      accessorKey: 'contactNo',
+      accessorKey: 'ewayNo',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Contact No." />
+        <DataTableColumnHeader column={column} title="E way No." />
       ),
       cell: ({ row }) => (
-        <div className="w-[120px] line-clamp-1">
-          {row.getValue('contactNo')}
+        <div className="w-[50px] line-clamp-1">
+          {row.getValue('ewayNo')}
         </div>
       ),
     },
-    {
-      accessorKey: 'totalAmount',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Address" />
-      ),
-      cell: ({ row }) => (
-        <div className="w-[80px] line-clamp-1">
-          {row.getValue('totalAmount')}
-        </div>
-      ),
-    },
+    // {
+    //   accessorKey: 'totalAmount',
+    //   header: ({ column }) => (
+    //     <DataTableColumnHeader column={column} title="Address" />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <div className="w-[80px] line-clamp-1">
+    //       {row.getValue('totalAmount')}
+    //     </div>
+    //   ),
+    // },
 
     {
-      accessorKey: 'date',
+      accessorKey: 'createdAt',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Date" />
       ),
       cell: ({ row }) => (
         <div className="w-[80px] line-clamp-1">
-          {row.getValue('description')}
+          {row.getValue('createdAt')}
         </div>
       ),
     },

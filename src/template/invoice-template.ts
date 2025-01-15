@@ -1,75 +1,10 @@
-const invoiceData = {
-  companyName: 'Joginder Engineering Works',
-  companyGSTIN: '24HDE7487RE5RT4',
-  customerName: 'Kevin Motors',
-  customerAddress:
-    'Chandani Chok, New Delhi, Opposite Statue, New Delhi, Delhi - 115014',
-  placeOfSupply:
-    'Chandani Chok, New Delhi, Opposite Statue, New Delhi, Delhi - 115014',
-  companyAddress:
-    'Chandani Chok, New Delhi, Opposite Statue, New Delhi, Delhi - 115014',
-  customerPhone: '9372346666',
-  contactNo: '9372346666',
-  customerGSTIN: '07AOLCC1206D1ZG',
-  invoiceNo: 'GST112020',
-  invoiceDate: '04-Mar-2020',
-  challanNo: '865',
-  challanDate: '03-Mar-2020',
-  poNo: '66',
-  deliveryDate: '04-Mar-2020',
-  reverseCharge: 'No',
-  lrNo: '958',
-  dueDate: '19-Mar-2020',
-  eWayNo: 'EWB54864584',
-  vehicalNo: 'EWB54864584',
-  items: [
-    {
-      name: 'Automatic Saw',
-      hsn: '8202',
-      quantity: 1,
-      unit: 'PCS',
-      rate: 586.0,
-      taxableValue: 586.0,
-    },
-    {
-      name: 'Stanley Hammer Claw Hammer Steel Shaft (Black and Chrome)',
-      hsn: '8205',
-      quantity: 1,
-      unit: 'PCS',
-      rate: 568.0,
-      taxableValue: 568.0,
-    },
-  ],
-  total: 1154.0,
-  igst: 103.86,
-  grandTotal: 1258.0,
-  totalInWords: 'ONE THOUSAND TWO HUNDRED AND FIFTY-EIGHT RUPEES ONLY',
-  taxSummary: [
-    {
-      hsn: '8202, 8205',
-      taxableValue: 1154.0,
-      igstRate: 9.0,
-      igstAmount: 103.86,
-      total: 103.86,
-    },
-  ],
-  totalTaxableValue: 1154.0,
-  totalIGST: 103.86,
-  totalTax: 103.86,
-  bankName: 'State Bank of India',
-  branchName: 'RAF CAMP',
-  accountNumber: '2000000004512',
-  ifscCode: 'SBIN0000488',
-  termsAndConditions: [
-    '1. Subject to Ahmedabad Jurisdiction.',
-    '2. Our responsibility ceases as soon as the goods leave our premises.',
-    '3. Goods once sold will not be taken back.',
-    '4. Delivery ex-premises.',
-  ],
-}
+import { ItemFormFields } from '@/components/FormWithTable/AddItemForm/AddItemForm'
 import { TDocumentDefinitions } from 'pdfmake/interfaces'
 
-export const getInvoiceTemplate = (): TDocumentDefinitions => {
+const calculateTaxableValue =({rate=0,quantity=0,tax=0}:ItemFormFields)=>{
+  return `${(rate * quantity) * (tax / 100)} (${tax})%`; 
+}
+export const getInvoiceTemplate = (invoiceData:any): TDocumentDefinitions => {
   return {
     content: [
       {
@@ -122,7 +57,7 @@ export const getInvoiceTemplate = (): TDocumentDefinitions => {
                   bold: true,
                 },
                 {
-                  text: invoiceData.companyGSTIN,
+                  text: invoiceData.gstin,
                 },
               ],
               alignment: 'left',
@@ -160,13 +95,13 @@ export const getInvoiceTemplate = (): TDocumentDefinitions => {
                   [
                     {
                       text: [
-                        { text: 'M/S ', style: 'header', bold: true },
+                        { text: 'M/S: ', style: 'header', bold: true },
                         invoiceData.customerName,
                       ],
                     },
                     {
                       text: [
-                        { text: 'Ph: ', style: 'header', bold: true },
+                        { text: 'Phone: ', style: 'header', bold: true },
                         invoiceData.customerPhone,
                       ],
                     },
@@ -222,21 +157,21 @@ export const getInvoiceTemplate = (): TDocumentDefinitions => {
 
                       text: [
                         { text: 'eWay No: ', style: 'header', bold: true },
-                        invoiceData.eWayNo,
+                        invoiceData.ewayNo,
                       ],
                     },
                     {
                       alignment: 'right',
                       text: [
                         { text: 'Vehical No: ', style: 'header', bold: true },
-                        invoiceData.vehicalNo,
+                        invoiceData.vehicleNo,
                       ],
                     },
                     {
                       alignment: 'right',
                       text: [
-                        { text: 'Transport', style: 'header', bold: true },
-                        invoiceData.vehicalNo,
+                        { text: 'Transport: ', style: 'header', bold: true },
+                        invoiceData.transport,
                       ],
                     },
                   ],
@@ -252,7 +187,7 @@ export const getInvoiceTemplate = (): TDocumentDefinitions => {
       {
         table: {
           headerRows: 1,
-          widths: ['auto', '*', 'auto', 'auto', 'auto', 'auto',],
+          widths: ['auto', '*', 'auto', 'auto', 'auto','auto', 'auto'],
           body: [
             [
               { text: 'Sr. No.', style: 'tableHeader' },
@@ -260,7 +195,8 @@ export const getInvoiceTemplate = (): TDocumentDefinitions => {
               { text: 'HSN / SAC', style: 'tableHeader' },
               { text: 'Qty', style: 'tableHeader' },
               { text: 'Rate', style: 'tableHeader' },
-              { text: 'Taxable Value', style: 'tableHeader' },
+              { text: 'Tax', style: 'tableHeader' },
+              { text: 'Taxable Value', style: 'tableHeader' }
             ],
             ...invoiceData.items.map((item: any, index: number) => [
               index + 1,
@@ -268,17 +204,26 @@ export const getInvoiceTemplate = (): TDocumentDefinitions => {
               item.hsn,
               `${item.quantity}`,
               item.rate.toFixed(2),
+              calculateTaxableValue(item),
               item.taxableValue.toFixed(2),
             ]),
             [
               '',
               '',
               '',
-              invoiceData.items.reduce((prev, crr) => {
-                return prev + crr.quantity
+              invoiceData.items.reduce((prev:number, {quantity=0}:ItemFormFields) => {
+                return prev + quantity
               }, 0),
               '',
-              invoiceData.totalTaxableValue.toFixed(2),
+              Number(
+                invoiceData.items
+                  .reduce((total:number, {rate=0,quantity=0,tax=0}:ItemFormFields) => {
+                    const taxAmount = (rate * Number(quantity)) * (Number(tax) / 100)
+                    return total + taxAmount
+                  }, 0)
+                  .toFixed(2)
+              ),
+              invoiceData.totalTaxableValue.toFixed(2)
             ],
             [
               {
@@ -286,7 +231,7 @@ export const getInvoiceTemplate = (): TDocumentDefinitions => {
                   { text: 'Total in words: ', bold: false },
                   { bold: true, text: invoiceData.totalInWords },
                 ],
-                colSpan: 6,
+                colSpan: 7,
               },
             ],
           ],
@@ -294,67 +239,135 @@ export const getInvoiceTemplate = (): TDocumentDefinitions => {
       },
       '\n',
       // Totals
-      {
-        columns: [
-          { width: '*', text: '' },
-          {
-            width: 'auto',
-            table: {
-              body: [
-                ['Total', invoiceData.total.toFixed(2)],
-                ['IGST', invoiceData.igst.toFixed(2)],
-                ['Total', invoiceData.grandTotal.toFixed(2)],
-              ],
-            },
-          },
-        ],
-      },
+      // {
+      //   columns: [
+      //     { width: '*', text: '' },
+      //     {
+      //       width: 'auto',
+      //       table: {
+      //         body: [
+      //           ['Total', invoiceData.total.toFixed(2)],
+      //           ['IGST', invoiceData.igst.toFixed(2)],
+      //           ['Total', invoiceData.grandTotal.toFixed(2)],
+      //         ],
+      //       },
+      //     },
+      //   ],
+      // },
+
+      // {
+      //   table: {
+      //     headerRows: 1,
+      //     widths: ['*', 'auto', 'auto', 'auto', 'auto'],
+      //     body: [
+      //       [
+      //         { text: 'HSN / SAC', style: 'tableHeader' },
+      //         { text: 'Taxable Value', style: 'tableHeader' },
+      //         { text: 'IGST %', style: 'tableHeader' },
+      //         { text: 'IGST Amount', style: 'tableHeader' },
+      //         { text: 'Total', style: 'tableHeader' },
+      //       ],
+      //       ...invoiceData.taxSummary.map((item: any) => [
+      //         item.hsn,
+      //         item.taxableValue.toFixed(2),
+      //         item.igstRate,
+      //         item.igstAmount.toFixed(2),
+      //         item.total.toFixed(2),
+      //       ]),
+      //       [
+      //         'Total',
+      //         invoiceData.totalTaxableValue.toFixed(2),
+      //         ' ',
+      //         invoiceData.totalIGST.toFixed(2),
+      //         invoiceData.totalTax.toFixed(2),
+      //       ],
+      //     ],
+      //   },
+      // },
+      '\n',
+      // Bank Details and Terms
+
+
+
+      //   {
+      //   table: {
+      //     headerRows: 1,
+      //     widths: ['*', 'auto', 'auto', 'auto', 'auto'],
+      //     body: [
+      //       [
+      //         { text: 'Bank Details', style: 'tableHeader',colSpan:5 },
+      //       ],
+      //       [
+      //         { text: 'Bank Details', style: 'sectionHeader' },
+      //         { text: `Bank Name: ${invoiceData.bankName??''}` },
+      //         { text: `Branch Name: ${invoiceData.branchName??''}` },
+      //         { text: `Bank Account Number: ${invoiceData.accountNumber??''}` },
+      //         { text: `Bank Branch IFSC: ${invoiceData.ifscCode??''}` },
+      //       ]
+      //     ],
+      //   },
+      // },
 
       {
         table: {
           headerRows: 1,
-          widths: ['*', 'auto', 'auto', 'auto', 'auto'],
+          widths: '*',
           body: [
             [
-              { text: 'HSN / SAC', style: 'tableHeader' },
-              { text: 'Taxable Value', style: 'tableHeader' },
-              { text: 'IGST %', style: 'tableHeader' },
-              { text: 'IGST Amount', style: 'tableHeader' },
-              { text: 'Total', style: 'tableHeader' },
+              {
+                text: 'Bank Detail',
+                bold: true,
+                style: 'tableHeader',
+                alignment: 'center',
+              },
+              {
+                text: '',
+                bold: true,
+                style: 'tableHeader',
+                alignment: 'center',
+              },
             ],
-            ...invoiceData.taxSummary.map((item: any) => [
-              item.hsn,
-              item.taxableValue.toFixed(2),
-              item.igstRate,
-              item.igstAmount.toFixed(2),
-              item.total.toFixed(2),
-            ]),
+
             [
-              'Total',
-              invoiceData.totalTaxableValue.toFixed(2),
-              ' ',
-              invoiceData.totalIGST.toFixed(2),
-              invoiceData.totalTax.toFixed(2),
+              {
+                columns: [
+                  [
+                    {
+                      text: [
+                        { text: 'Bank Details: ', style: 'header', bold: true },
+                        invoiceData.customerName,
+                      ],
+                    },
+                    {
+                      text: [
+                        { text: 'Bank Name: ', style: 'header', bold: true },
+                        invoiceData.customerPhone,
+                      ],
+                    }
+                  ],
+                ],
+              },
+              {
+                columns: [
+                  [
+                    {
+                      text: [
+                        { text: 'Bank Account Number: ', style: 'header', bold: true },
+                        invoiceData.customerGSTIN,
+                      ],
+                    },
+                    {
+                      text: [
+                        { text: 'Bank Branch IFSC: ', style: 'header', bold: true },
+                        invoiceData.customerAddress,
+                      ],
+                    },
+                  ],
+                ],
+              },
             ],
           ],
         },
-      },
-      '\n',
-      // Bank Details and Terms
-      {
-        columns: [
-          [
-            { text: 'Bank Details', style: 'sectionHeader' },
-            { text: `Bank Name: ${invoiceData.bankName}` },
-            { text: `Branch Name: ${invoiceData.branchName}` },
-            { text: `Bank Account Number: ${invoiceData.accountNumber}` },
-            { text: `Bank Branch IFSC: ${invoiceData.ifscCode}` },
-          ],
-          [
-            { text: 'Terms and Conditions', style: 'sectionHeader' },
-            { text: invoiceData.termsAndConditions.join('\n'), style: 'terms' },
-          ],
-        ],
       },
       '\n',
       // Signature

@@ -120,12 +120,12 @@ const CompanyTable = ({ data }: { data: any[] }) => {
       ),
     },
     {
-      accessorKey: 'gst',
+      accessorKey: 'gstin',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="GST" />
       ),
       cell: ({ row }) => (
-        <div className="w-[120px] line-clamp-1">{row.getValue('gst')}</div>
+        <div className="w-[120px] line-clamp-1">{row.getValue('gstin')}</div>
       ),
     },
     {
@@ -186,6 +186,42 @@ const CompanyTable = ({ data }: { data: any[] }) => {
         <div className="w-[80px] line-clamp-1">
           {row.getValue('description')}
         </div>
+      ),
+    },
+    {
+      accessorKey: 'bankName',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Bank Name" />
+      ),
+      cell: ({ row }) => (
+        <div className="w-[120px] line-clamp-1">{row.getValue('bankName')}</div>
+      ),
+    },
+    {
+      accessorKey: 'branchName',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Branch Name" />
+      ),
+      cell: ({ row }) => (
+        <div className="w-[120px] line-clamp-1">{row.getValue('branchName')}</div>
+      ),
+    },
+    {
+      accessorKey: 'accountNumber',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Account Number" />
+      ),
+      cell: ({ row }) => (
+        <div className="w-[120px] line-clamp-1">{row.getValue('accountNumber')}</div>
+      ),
+    },
+    {
+      accessorKey: 'ifscCode',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="IFSC Code" />
+      ),
+      cell: ({ row }) => (
+        <div className="w-[120px] line-clamp-1">{row.getValue('ifscCode')}</div>
       ),
     },
     {

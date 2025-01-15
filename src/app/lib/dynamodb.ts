@@ -97,7 +97,9 @@ export const getAllItems = async (params: QueryCommandInput) => {
       }
     })
     .catch((error) => {
+      console.log('metadata', error)
       return {
+        items:[],
         statusCode: error.$metadata.httpStatusCode,
       }
     })
