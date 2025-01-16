@@ -1,3 +1,5 @@
+import { revalidateTag } from "next/cache";
+
 const AUTH_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IjEyMzQ1Njc4OTAiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.8_3wpqehzTXfBzUmhgusfhUNDo15mi0EejjdlNqHwn4"
 
 const endpoint = `${process.env.URL}/api/invoices`
@@ -21,7 +23,7 @@ export const saveInvoice = async (invoiceData:any) => {
   if (!response.ok) {
     throw new Error('Failed to save invoice');
   }
-
+    revalidateTag('invoices')
     const text = await response.text(); // Get the response as text
     return text ? JSON.parse(text) : []; // Parse JSON if text is not empty
  
@@ -37,8 +39,9 @@ export async function getInvoices() {
       },
       next: { tags: ['Invoices'] },
     })
-    if (!response.ok) {
-      new Error('Network response was not ok')
+ if (!response.ok) {
+      const errorDetails = await response.text();
+      throw new Error(`Network response was not ok: ${errorDetails}`);
     }
 
 
@@ -59,8 +62,9 @@ export async function getInvoicesById(id:string) {
         Authorization: `Bearer ${process.env.AUTH_TOKEN}`,
       }
     })
-    if (!response.ok) {
-      new Error('Network response was not ok')
+ if (!response.ok) {
+      const errorDetails = await response.text();
+      throw new Error(`Network response was not ok: ${errorDetails}`);
     }
     const text = await response.text();
     const data = text ? JSON.parse(text) : [];
@@ -80,13 +84,13 @@ export async function getInvoiceItemsByInvoiceId(id:string) {
       }
     })
     console.log("response---",response)
-    if (!response.ok) {
-      new Error('Network response was not ok')
+ if (!response.ok) {
+      const errorDetails = await response.text();
+      throw new Error(`Network response was not ok: ${errorDetails}`);
     }
     const text = await response.text();
     const data = text ? JSON.parse(text) : [];
     return JSON.stringify(data ?? [])
-    console.log("data",data)
   } catch (error) {
     console.error('Error in getInvoices:', error)
     throw error

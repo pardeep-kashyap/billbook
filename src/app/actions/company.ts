@@ -15,8 +15,9 @@ export async function save(body: string) {
       body,
     })
 
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
+     if (!response.ok) {
+      const errorDetails = await response.text();
+      throw new Error(`Network response was not ok: ${errorDetails}`);
     }
     revalidateTag('companies')
     return response.json() // Consume the response body
@@ -54,8 +55,9 @@ export async function getCompanies() {
       next: { tags: ['companies'] },
     })
 
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
+     if (!response.ok) {
+      const errorDetails = await response.text();
+      throw new Error(`Network response was not ok: ${errorDetails}`);
     }
 
     const data = await response.json()
@@ -75,8 +77,9 @@ export async function remove(id: string) {
       },
     })
 
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
+     if (!response.ok) {
+      const errorDetails = await response.text();
+      throw new Error(`Network response was not ok: ${errorDetails}`);
     }
 
     revalidateTag('companies')
