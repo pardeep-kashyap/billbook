@@ -2,7 +2,7 @@
 
 import { revalidateTag } from 'next/cache'
 
-const endpoint = `${process.env.URL}/api/company`
+const endpoint = `/api/company`
 
 export async function save(body: string) {
   try {
@@ -47,7 +47,7 @@ export async function update(body: string) {
 
 export async function getCompanies() {
   try {
-    const response = await fetch(`${process.env.URL}/api/company`, {
+    const response = await fetch(`/api/company`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${process.env.AUTH_TOKEN}`,

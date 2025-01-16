@@ -2,7 +2,7 @@ import { revalidateTag } from "next/cache";
 
 const AUTH_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IjEyMzQ1Njc4OTAiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.8_3wpqehzTXfBzUmhgusfhUNDo15mi0EejjdlNqHwn4"
 
-const endpoint = `${process.env.URL}/api/invoices`
+const endpoint = `/api/invoices`
 console.log("endpoint",endpoint)
 
 export const generateInvoiceNumber = async () => {
