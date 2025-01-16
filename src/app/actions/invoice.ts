@@ -41,7 +41,7 @@ export async function getInvoices() {
     })
  if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${errorDetails}`);
+      throw new Error(`Network response was not ok: ${process.env.URL}`);
     }
 
 
@@ -64,7 +64,7 @@ export async function getInvoicesById(id:string) {
     })
  if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${errorDetails}`);
+      throw new Error(`Network response was not ok: ${process.env.URL}`);
     }
     const text = await response.text();
     const data = text ? JSON.parse(text) : [];
@@ -86,7 +86,7 @@ export async function getInvoiceItemsByInvoiceId(id:string) {
     console.log("response---",response)
  if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${errorDetails}`);
+      throw new Error(`Network response was not ok: ${process.env.URL}`);
     }
     const text = await response.text();
     const data = text ? JSON.parse(text) : [];

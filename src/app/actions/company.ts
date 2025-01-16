@@ -17,7 +17,7 @@ export async function save(body: string) {
 
      if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${errorDetails}`);
+      throw new Error(`Network response was not ok: ${process.env.URL}`);
     }
     revalidateTag('companies')
     return response.json() // Consume the response body
@@ -57,7 +57,7 @@ export async function getCompanies() {
 
      if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${errorDetails}`);
+      throw new Error(`Network response was not ok: ${process.env.URL}`);
     }
 
     const data = await response.json()
@@ -79,7 +79,7 @@ export async function remove(id: string) {
 
      if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${errorDetails}`);
+      throw new Error(`Network response was not ok: ${process.env.URL}`);
     }
 
     revalidateTag('companies')
