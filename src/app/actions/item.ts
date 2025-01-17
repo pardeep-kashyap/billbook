@@ -2,7 +2,7 @@
 
 import { revalidateTag } from 'next/cache'
 
-const endpoint = `/api/item`
+const endpoint = `${process.env.URL}/api/item`
 
 export async function save(body: string) {
   try {
@@ -17,7 +17,7 @@ export async function save(body: string) {
 
      if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${process.env.URL}`);
+      throw new Error(`Network response was not ok: ${JSON.stringify(response)}`);
     }
     revalidateTag('items')
     return response.json() // Consume the response body
@@ -47,7 +47,7 @@ export async function update(body: string) {
 
 export async function getItems() {
   try {
-    const response = await fetch(`/api/item`, {
+    const response = await fetch(endpoint, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${process.env.AUTH_TOKEN}`,
@@ -57,7 +57,7 @@ export async function getItems() {
 
  if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${process.env.URL}`);
+      throw new Error(`Network response was not ok: ${JSON.stringify(response)}`);
     }
 
 
@@ -80,7 +80,7 @@ export async function remove(id: string) {
 
      if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${process.env.URL}`);
+      throw new Error(`Network response was not ok: ${JSON.stringify(response)}`);
     }
 
     revalidateTag('items')

@@ -2,7 +2,7 @@
 
 import { revalidateTag } from 'next/cache'
 
-const endpoint = `/api/company`
+const endpoint = `${process.env.URL}/api/company`
 
 export async function save(body: string) {
   try {
@@ -17,7 +17,7 @@ export async function save(body: string) {
 
      if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${process.env.URL}`);
+      throw new Error(`Network response was not ok: ${JSON.stringify(response)}`);
     }
     revalidateTag('companies')
     return response.json() // Consume the response body
@@ -47,7 +47,7 @@ export async function update(body: string) {
 
 export async function getCompanies() {
   try {
-    const response = await fetch(`/api/company`, {
+    const response = await fetch(endpoint, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${process.env.AUTH_TOKEN}`,
@@ -57,7 +57,7 @@ export async function getCompanies() {
 
      if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${process.env.URL}`);
+      throw new Error(`Network response was not ok: ${JSON.stringify(response)}`);
     }
 
     const data = await response.json()
@@ -79,7 +79,7 @@ export async function remove(id: string) {
 
      if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${process.env.URL}`);
+      throw new Error(`Network response was not ok: ${JSON.stringify(response)}`);
     }
 
     revalidateTag('companies')

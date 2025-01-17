@@ -2,7 +2,7 @@ import { revalidateTag } from "next/cache";
 
 const AUTH_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IjEyMzQ1Njc4OTAiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.8_3wpqehzTXfBzUmhgusfhUNDo15mi0EejjdlNqHwn4"
 
-const endpoint = `/api/invoices`
+const endpoint = `${process.env.URL}/api/invoices`
 console.log("endpoint",endpoint)
 
 export const generateInvoiceNumber = async () => {
@@ -41,7 +41,7 @@ export async function getInvoices() {
     })
  if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${process.env.URL}`);
+      throw new Error(`Network response was not ok: ${JSON.stringify(response)}`);
     }
 
 
@@ -64,7 +64,7 @@ export async function getInvoicesById(id:string) {
     })
  if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${process.env.URL}`);
+      throw new Error(`Network response was not ok: ${JSON.stringify(response)}`);
     }
     const text = await response.text();
     const data = text ? JSON.parse(text) : [];
@@ -86,7 +86,7 @@ export async function getInvoiceItemsByInvoiceId(id:string) {
     console.log("response---",response)
  if (!response.ok) {
       const errorDetails = await response.text();
-      throw new Error(`Network response was not ok: ${process.env.URL}`);
+      throw new Error(`Network response was not ok: ${JSON.stringify(response)}`);
     }
     const text = await response.text();
     const data = text ? JSON.parse(text) : [];
