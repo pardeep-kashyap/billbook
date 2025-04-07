@@ -2,7 +2,7 @@
 
 import { revalidateTag } from 'next/cache'
 
-const endpoint = `${process.env.URL}/api/item`
+const endpoint = `/api/item`
 
 export async function save(body: string) {
   try {

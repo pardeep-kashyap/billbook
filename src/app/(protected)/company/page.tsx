@@ -3,6 +3,8 @@ import Image from 'next/image'
 import CompanyTable from '@/components/company/CompanyTable'
 import { getCompanies } from '@/app/actions/company'
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Company',
   description: 'A task and issue tracker build using Tanstack Table.',

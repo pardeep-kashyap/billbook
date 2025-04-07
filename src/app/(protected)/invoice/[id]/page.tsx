@@ -5,6 +5,8 @@ import { CreateInvoice } from '@/components/Invoice'
 import { Metadata } from 'next'
 import { getInvoicesById } from '@/app/actions/invoice'
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Invoice',
   description: 'A task and issue tracker build using Tanstack Table.',

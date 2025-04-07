@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import ItemTable from '@/components/FormWithTable/ItemTable/ItemTable'
 import { getItems } from '@/app/actions/item'
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Item',
   description: 'A task and issue tracker build using Tanstack Table.',
