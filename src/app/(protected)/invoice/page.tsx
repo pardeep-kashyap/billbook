@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import {  getInvoices } from '@/app/actions/invoice'
+import { getInvoices } from '@/app/actions/invoice'
 import { InvoiceList } from '@/components/Invoice'
 
 export const metadata: Metadata = {
@@ -8,11 +8,11 @@ export const metadata: Metadata = {
 }
 
 export default async function Page() {
-const data = JSON.parse(await getInvoices())
+  const data = await getInvoices()
 
   return (
     <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
-      <InvoiceList data={data??[]} />
+      <InvoiceList data={data ?? []} />
     </div>
   )
 }
